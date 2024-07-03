@@ -1,0 +1,14 @@
+July 02, 2024
+
+- get the filters right 
+- rework all the code and optimize
+- add more functionality to filters
+- go through the code, clean it up and fix it.
+- convert redundant functions to OOPS
+- make all filters OOPS
+
+
+future improvements 
+ - add RAG info access
+ - add AI for reading questions 
+ -
