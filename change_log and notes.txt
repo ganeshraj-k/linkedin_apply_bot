@@ -11,4 +11,21 @@ July 02, 2024
 future improvements 
  - add RAG info access
  - add AI for reading questions 
- -
+ 
+
+July - 03, 2024:
+
+today's goals
+ - cleanup current code and make it well packaged
+ - add checks to see if the job has been already applied to
+ - add checks to see if text forms have already been filled
+ - benchmark and try to optimize
+
+ JUly - 04, 2024
+
+ today's goals
+  - get data about the companies applied 
+  - fix the done button  DONE
+  - add exceptions
+   - make code modular
+  - research RAG based algorithms
