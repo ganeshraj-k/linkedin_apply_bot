@@ -19,3 +19,4 @@ langchain
 bitsandbytes
 llama-index-llms-huggingface
 ipywidgets
+langchain-community
