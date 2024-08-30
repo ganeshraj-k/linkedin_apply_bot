@@ -7,12 +7,21 @@ from llama_index.llms.openai import OpenAI
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import uvicorn
+import json
+
+
+
 
 # Load environment variables
 load_dotenv()
 
 # Ensure OPENAI_API_KEY is set correctly
+secrets_file = r"C:\Users\localadmin\Desktop\myprojects\linkedinsucks\secrets.json"
+with open(secrets_file, 'r') as file:
+    data = json.load(file)
+    
 
+OPENAI_API_KEY = data["OPENAI_KEY"]
 
 # Set the environment variable for OpenAI API Key
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
@@ -21,7 +30,7 @@ os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 gpt35_llm = OpenAI(model="gpt-3.5-turbo")
 
 # Load documents
-documents = SimpleDirectoryReader(r'C:\Users\localadmin\Desktop\myprojects\linkedinsucks\linkedinsucks_2\RAG_models\mydata').load_data()
+documents = SimpleDirectoryReader(r"C:\Users\localadmin\Desktop\myprojects\linkedinsucks\linkedinsucks\mydata").load_data()
 index = VectorStoreIndex.from_documents(documents)
 
 # Define the prompt template
@@ -33,8 +42,10 @@ DEFAULT_TEXT_QA_PROMPT_TMPL = (
     "Given the context information and not prior knowledge, "
     "answer the query in the format requested in the query. "
     "If there are options in the query, answer by choosing one or more options as required. "
+    "try to read the document thoroughly to extract more info from the document  "
     "Keep the answers concise and to the point, do not answer long sentences unless necessary or specified. "
     "Keep the answers concise. Answer in one or two words wherever possible. "
+    "return only one answer, do not return multiple answers or list of answers unless specified"
     "Query: {query_str}\n"
     "Answer: "
 )

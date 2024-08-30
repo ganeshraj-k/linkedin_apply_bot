@@ -37,3 +37,8 @@ pydantic
 fastapi
 requests
 sse_starlette
+fuzzywuzzy
+pypdf2
+pyresparser
+spacy
+pdfplumber

@@ -1,0 +1,59 @@
+Name: Ganesh Raj K
+Email Address: ganesh_012@outlook.com
+Phone Number: 848 313 8525
+LinkedIn: linkedin.com/in/ganeshrajk
+GitHub: github.com/ganeshraj-k
+
+Experience:
+1. Rutgers UCM, Data Analyst (Feb 2023 – Present, New Brunswick)
+Task: Harnessing learning data from canvas Api to predict new student course outcomes/CGPA grade using a classification model with 78 percent success rate in classifying new students. 
+Skills and Tech Stack Used: Python, Machine Learning, Canvas API, ANN (Artificial Neural Networks)
+
+2. Deloitte Consulting, Data Analyst (June 2019 – Jan 2022, Bengaluru)
+- Project: Medical Data NER
+Task: Enhancing query speed for a medical record database with over 2 million records. Used Amazon Comprehend with Python to perform Named Entity Recognition on the DynamoDB dataset. Added recognized entities as tags using AWS Glue for the ETL process.
+Skills and Tech Stack Used: Python, Amazon Comprehend, DynamoDB, AWS Glue
+
+- Project: Restaurant Chain
+Task: Categorizing restaurant patrons based on their dining preferences from survey data using K-Means clustering. Generated detailed Tableau visualizations to correlate the cluster results with their risk and safety behaviors. 
+Skills and Tech Stack Used: K-Means Clustering, Tableau, Data Analysis
+
+- Project: Banking
+Task: Mitigating the lockdown-induced customer churn by constructing a multivariate logistic regression model to identify churn-prone customers and key contributing factors. Performed EDA using matplotlib and communicated results to stakeholders. 
+Skills and Tech Stack Used: Python, Matplotlib, Logistic Regression, EDA (Exploratory Data Analysis)
+
+- Project: Geospatial Intelligence
+Task: Addressing the challenge of manually identifying docked vessels by developing an object detection system using Mask R-CNN and OpenCV for change detection in Python. Accessed high-definition GIS satellite imagery from the Sentinel API in Python and dehazed the images for better results.
+Skills and Tech Stack Used: Python, Mask R-CNN, OpenCV, AWS Lambda, CloudWatch, GIS, Sentinel API
+
+3. MAQ Software, Data Engineer (May 2018 – July 2018, Hyderabad)
+Task: Establishing an ETL pipeline using SQL Server Management Studio and SSIS, consolidating three large Azure data marts with over 2 million records into one. Developed triggers and stored procedures in place to identify inconsistencies during the transfer and maintain data integrity.
+Skills and Tech Stack Used: SQL Server Management Studio, SSIS, Azure, ETL
+
+Projects:
+1. Chatbot with a personality: [github]
+Task: Building a generative AI (Gen AI) model chatbot to replicate Chandler Bing’s dialogue style from “Friends,” utilizing an extensive dataset of 8,700 dialogues.
+Skills and Tech Stack Used: Python, Gen AI, Seq2Seq, LSTM
+
+2. Twitter Search: [github]
+Task: Designing a web application with a local cache of 200 trending tweets, leveraging a combination of Postgres (relational) and MongoDB (non-relational) to query a dataset of about 120,000 tweets from 13,000 users.
+Skills and Tech Stack Used: Python, Postgres, MongoDB, Flask, NLP
+
+3. 2024 Travelers Insurance Analytics University Contest:
+Task: Conducting Tweedie regression on a zero-inflated dataset of over 29,000 records, fine-tuned parameters using grid search, and assessed model efficacy with the Gini index. 
+Skills and Tech Stack Used: Python, Regression, Grid Search, Gini Index
+
+Education:
+• MS in Data Science, Rutgers University (May 2024)
+• BTech in Computer Science and Engineering, Indian Institute of Technology Indore (May 2019)
+
+Skills:
+• Programming Languages: Python, R
+• Machine Learning Libraries and Frameworks: PyTorch, scikit-learn, pandas, numpy
+• Cloud: AWS, DynamoDB, Glue, EC2, SageMaker, IAM, S3
+• Office: Excel, PowerPoint, VBA
+• Data Visualization: Tableau, Matplotlib, Seaborn, Plotly
+
+Certifications:
+• AWS Machine Learning Specialist
+• AWS Cloud Practitioner
