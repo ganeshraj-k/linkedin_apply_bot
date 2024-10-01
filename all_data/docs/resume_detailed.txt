@@ -1,0 +1,62 @@
+Here is the summarized profile for Ganesh Raj K based on the provided resume and job application Q&A data:
+
+**Contact Information:**
+- **Name:** Ganesh Raj K
+- **Location:** New Brunswick, New Jersey, 08901, United States
+- **Phone Number:** 848-313-8525
+- **Email Address:** ganesh_012@outlook.com
+- **LinkedIn:** linkedin.com/in/ganeshrajk
+- **GitHub:** github.com/ganeshraj-k
+
+**Relocation Preference:** Not specifically mentioned; comfortable commuting to job locations.
+
+**Gender:** Not indicated.
+
+**Education:**
+- MS in Data Science, Rutgers University (Expected May 2024, CGPA – 3.75)
+- BTech in Computer Science and Engineering, IIT Indore (Graduated May 2019)
+
+**Experience with Skillsets:**
+1. **Data Analysis & Science:**
+   - **Tools:** SAS (3+ years), Python (5 years), R (not specified but implied), and various ML techniques (5 years for Data Science).
+   - **Specific Projects/Experience:**
+     - Predictive modeling of student outcomes using classification models (Rutgers).
+     - K-Means clustering and EDA for restaurant patrons (Deloitte).
+     - Reduced churn with logistic regression and EDA (Deloitte).
+     - Developed object detection systems (Deloitte).
+     - Twitter Search project utilizing SAS and databases.
+
+2. **Programming & Scripting:**
+   - **Languages:** Python (5 years), R (implied), SQL (4 years).
+   - **Other Skills:** PyTorch, scikit-learn, pandas, numpy.
+
+3. **Database Management:**
+   - **Technologies:** Postgres, MongoDB, SQL, PySpark.
+
+4. **Data Visualization:**
+   - **Tools:** Tableau, Matplotlib, Seaborn, Plotly (experience linked with projects).
+
+5. **Cloud Computing:**
+   - **Platforms:** AWS (certified as Machine Learning Specialist).
+
+6. **ETL Processes:**
+   - Developed ETL pipelines using SQL Server and SSIS (MAQ Software).
+
+7. **Accounting & Finance:**
+   - Mentioned 1 year experience in accounting-related areas (Accounting/Auditing, GAAP, Account Reconciliation, etc.).
+
+**Certifications:**
+- AWS Machine Learning Specialist
+- AWS Cloud Practitioner
+
+**Additional Information:**
+- **Salary Expectations:** $80,000
+- **Immediate Availability:** Yes
+- **Comfortable Working Settings:** Onsite, hybrid
+- **Background Check & Drug Test:** Willing to undergo both.
+- **Legally Authorized to Work in the U.S.:** Yes
+
+**Key Achievements:**
+- Recognized with Applause awards at Deloitte for client-centric work and timely deliverables.
+
+This summary encapsulates Ganesh Raj K's qualifications, skills, and professional experiences as per the provided documents.

@@ -1,0 +1,7 @@
+agentic rag 
+
+llama index  - gpt4
+llama index - phi3 mini instruct
+
+langchain  - gpt 4
+langchain - phi 3 instruct

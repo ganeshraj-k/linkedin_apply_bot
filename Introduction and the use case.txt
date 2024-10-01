@@ -1,0 +1,37 @@
+Introduction and the use case 
+
+Each job application has different kind of web elements and questions
+For web elements – selenium
+For questions – query engine 
+Automation – selenium script + logging + skip if already applied + job filters + remove filters if no result found + log all the applied companies to an excel file
+Query engine – RAG + Json file + Frequent queries +hashing + fuzzy matching  +each button gets response and responds accordingly + persistent indices + local indices
++resume rewriting for more details 
+
+RAG-
+Llama index
+Embed model
+Simple directory reader
+Vector db index
+Local vs online inference
+Routing  - agentic rag
+Different types of queries different types of responses
+
+Fast api – uvicorn  for api calling 
+
+
+Linkedin post:
+  Job applications were getting tedious, so I made a bot using selenium and llamaindex that uses linkedin’s easyapply to apply jobs for me.
+
+Talk about the RAG system 
+Llama index short description :
+Multi document Agentic RAG:
+-	Local inference
+-	Online inference
+Local cache- hashing:
+Persistent db of the embeddings:
+Packaged with uvicorn – Fast api
+
+Handling web elements:
+Selenium. 
+The challenge was every web element has different interface and making a handler for 3ach button. 
+To make the process more streamlined I also added filters, json role, 
