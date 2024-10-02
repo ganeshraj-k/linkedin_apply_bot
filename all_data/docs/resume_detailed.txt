@@ -1,62 +1,42 @@
-Here is the summarized profile for Ganesh Raj K based on the provided resume and job application Q&A data:
+Applicant Profile Summary:
 
-**Contact Information:**
-- **Name:** Ganesh Raj K
-- **Location:** New Brunswick, New Jersey, 08901, United States
-- **Phone Number:** 848-313-8525
-- **Email Address:** ganesh_012@outlook.com
-- **LinkedIn:** linkedin.com/in/ganeshrajk
-- **GitHub:** github.com/ganeshraj-k
+Ganesh Raj Kyatham is a skilled data professional, with a strong foundation in computer science and data science. He completed his BTech in Computer Science and Engineering from the Indian Institute of Technology, Indore, in May 2019, following which he pursued MS in Data Science from Rutgers University, earning a CGPA of 3.75, due to graduate in May 2024.
 
-**Relocation Preference:** Not specifically mentioned; comfortable commuting to job locations.
+His work experience includes roles as a Data Analyst at Rutgers UCM and Deloitte Consulting, and a Data Engineer stint at MAQ Software. At Rutgers UCM, he utilized learning data to predict student course outcomes with a 78% success rate, and at Deloitte, his remarkable work included using K -Means clustering to categorize restaurant patrons, which led to a 74% increase in takeaway orders, and reducing customer churn by 30% in bank settings. With MAQ software, he established an ETL pipeline that consolidated large data marts.
 
-**Gender:** Not indicated.
+He has executed successful projects like designing a web application with 200 trending tweets for efficient search and building an AI LinkedIn Application bot for automated job applications. He is seasoned in languages such as Python and SAS, and cloud computing technologies like AWS and Azure.
 
-**Education:**
-- MS in Data Science, Rutgers University (Expected May 2024, CGPA – 3.75)
-- BTech in Computer Science and Engineering, IIT Indore (Graduated May 2019)
+Based on his certifications as an AWS Machine Learning Specialist and AWS Cloud Practitioner, Ganesh possesses a strong understanding of Machine Learning and Cloud Services.
 
-**Experience with Skillsets:**
-1. **Data Analysis & Science:**
-   - **Tools:** SAS (3+ years), Python (5 years), R (not specified but implied), and various ML techniques (5 years for Data Science).
-   - **Specific Projects/Experience:**
-     - Predictive modeling of student outcomes using classification models (Rutgers).
-     - K-Means clustering and EDA for restaurant patrons (Deloitte).
-     - Reduced churn with logistic regression and EDA (Deloitte).
-     - Developed object detection systems (Deloitte).
-     - Twitter Search project utilizing SAS and databases.
+Questions and Answers from JSON data:
 
-2. **Programming & Scripting:**
-   - **Languages:** Python (5 years), R (implied), SQL (4 years).
-   - **Other Skills:** PyTorch, scikit-learn, pandas, numpy.
-
-3. **Database Management:**
-   - **Technologies:** Postgres, MongoDB, SQL, PySpark.
-
-4. **Data Visualization:**
-   - **Tools:** Tableau, Matplotlib, Seaborn, Plotly (experience linked with projects).
-
-5. **Cloud Computing:**
-   - **Platforms:** AWS (certified as Machine Learning Specialist).
-
-6. **ETL Processes:**
-   - Developed ETL pipelines using SQL Server and SSIS (MAQ Software).
-
-7. **Accounting & Finance:**
-   - Mentioned 1 year experience in accounting-related areas (Accounting/Auditing, GAAP, Account Reconciliation, etc.).
-
-**Certifications:**
-- AWS Machine Learning Specialist
-- AWS Cloud Practitioner
-
-**Additional Information:**
-- **Salary Expectations:** $80,000
-- **Immediate Availability:** Yes
-- **Comfortable Working Settings:** Onsite, hybrid
-- **Background Check & Drug Test:** Willing to undergo both.
-- **Legally Authorized to Work in the U.S.:** Yes
-
-**Key Achievements:**
-- Recognized with Applause awards at Deloitte for client-centric work and timely deliverables.
-
-This summary encapsulates Ganesh Raj K's qualifications, skills, and professional experiences as per the provided documents.
+- Full Name: Ganesh Raj Kyatham
+- Contact Number: 8483138525
+- Email Id: ganesh_012@outlook.com
+- Country Code: United States (+1)
+- Bachelor's Degree Completion: Yes
+- Accounting/Auditing Experience: 1 year
+- Legal Right to Work in the United States: Yes
+- Microsoft Excel Experience: 3 years
+- Salary Expectations: 80,000 USD
+- GAAP Experience: 1 year
+- Account Reconciliation Experience: 1 year
+- General Ledger Experience: 1 year
+- Comfortable Undergoing Background Check: Yes
+- Comfortable Taking Drug Test: Yes
+- Comfortable Commuting to Job's Location: Yes
+- Comfortable Working Onsite: Yes
+- Sponsorship for Employment Visa Status: No
+- Legally Authorized to Work in the US: Yes
+- Accounting Balances Experience: 1 year
+- Balance Sheets Experience: 1 year
+- QuickBooks Experience: 1 year
+- Immediate Startup Availability: Yes
+- Journal Entries (Accounting) Experience: 1 year
+- MySQL Experience: 4 years
+- Willingness to Go Onsite at Charlotte, NC: Yes
+- Python Experience: 5 years
+- Data Science Experience: 5 years
+- AI/ML Experience: Yes
+- Comfortable Working in a Hybrid Setting: Yes
+- Current Residence: Within 1 hour drive to O'Hare Airport
