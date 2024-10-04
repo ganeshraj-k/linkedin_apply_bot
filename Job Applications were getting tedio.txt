@@ -1,0 +1,64 @@
+Job Applications were getting tedious and I was looking for a use case to practice
+Gen AI so I took on the challenge of Automating a part of my job applications. 
+We all know how lackluster and repiritve the task of applying for jobs is, but I think
+this reptotiuiveness is exactly what makes it a well defined use case. 
+
+I split the project into two clearly separated parts a. 1. Interacting with the web elements and automation 
+2. A query engine system to answer questions in each application. 
+
+
+1. Interacting with the Web elements and automation:
+I used Selenium with Python for interacting with the web page and the automatioin part. Selenium provides 
+a ton of simple functions to handle a browser instance and to locate and interact with web elements. 
+The challenge was analyzing several applications to get an idea of all the possible input types like radio button, drop down, autofill..etc and then
+defining functiins that take a standard answer and fill it in the web element according to the element's format. 
+I first began with logging in to linkedin using python and then worked on iterators to iterate through all the search results on a page and then go to next page when done. and built other features on top of that. 
+i also added the option to filter the results based on Salary, Experience, location, company name, remote/on-site etc and also reset the filters if it yields no results.
+
+All the jobs applied will be populated to an excel file.
+
+
+2. Query Engine:
+Each application has it's own set of questions. I first began with making a txt doc of all possible questions and tried string search to get the appropriate answer.
+which obviously was suboptimal. So after several trials and several more errors I settled on a system taht is a combination of Hashing, fuzzymatching and multi document agentic RAG.
+
+hashing:
+Despite how fast and efficient LLM's get, it still doesn't compare to the simplicity of O(1) time complexity. ON linkedin 90 percent of the time Same questions across different job applications have the exact same phrasing,  for instance if the question is "When is youe Expected Graduation date" Other applications will use the same phrasing too, it's hard to find some application use phrasing like "Enter your expected Graduation Date"  or something else. So this makes a case to keep a cache of frequent queries that can be answered without bothering the RAG model. I made a json file of Questions and Answers as KEY VALue pairs that can be accessed with hashing. 
+
+If a question has phrasing that is close but not exactly SAME i USED fuzzy matching( min edit distance/Levenshtein distance) to with 90 percent match criteria to find a match in the list of questions in the json. 
+
+If neither of this works out, the query is forwarded to the RAg model;
+
+Multi Documented Agentic RAG:
+
+RAG- explanation:
+
+For the RAG workflow I used llamaindex frame work multi document RAG, Agentic RAG. llamaindex provides inbuilt retrievers and text generators. which make querying much easy. 
+
+
+
+For the RAG model I wanted to go with a completely local setup. So I was looking for Small Language Models because using a Large Resource intensive general purpose model
+like GPT4 with 175N+ params seemed excessive because why use a chainsaw to cut an apple when a fruit knife will do. I believe that task specific small language models should be the way to go.  I was looking into models that have less than 2B parameters and that can run smoothly on a local device. I brought the list down to tinyllama and phi3-mini-instruct and finally went ahead with phi3-mini-instruct because the quality of output was comparable to models that had 10 times more parameters. 
+
+The specific model I used is - so and so 
+
+explain the quantisationa nd th infra
+
+although phi3 perfomremed well for conside Q and A based queries it did not do well for long form summary based answers. So I added another Rag model using GPT 3.5 for this use case. 
+
+Two dynamically decide when to use which of these tools when can use Agentic RAG format. 
+THese both RAG models are packaged into tools and are connected to llamaindex;s RouterQueryEngine function. the routerQueryEngine dynamically decides which tool to use
+based on the given query. Lasttly I prompt engineered both the models to make the output suit my specific use case. 
+
+check out the video demo of the tool. 
+Here's a link to the full article explaining the project. 
+
+
+
+
+
+
+
+
+
+
