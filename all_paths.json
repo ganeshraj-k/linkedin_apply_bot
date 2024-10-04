@@ -1,0 +1,7 @@
+{
+    "secrets_path": "C:\\Users\\localadmin\\Desktop\\new desktop\\linkedinsucks\\user_files\\secrets.json",
+    "docs_path": "C:\\Users\\localadmin\\Desktop\\new desktop\\linkedinsucks\\linkedin_easyapply_bot\\all_data\\docs",
+    "search_details": "C:\\Users\\localadmin\\Desktop\\new desktop\\linkedinsucks\\linkedin_easyapply_bot\\all_data\\search_details\\search_details.json",
+    "persistent_storage": "C:\\Users\\localadmin\\Desktop\\new desktop\\linkedinsucks\\linkedin_easyapply_bot\\all_data\\persistent_storage",
+    "applied_jobs": "C:\\Users\\localadmin\\Desktop\\new desktop\\linkedinsucks\\linkedin_easyapply_bot\\log_files\\applied_jobs.xlsx"
+}
