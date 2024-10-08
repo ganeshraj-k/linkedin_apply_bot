@@ -52,7 +52,7 @@ based on the given query. Lasttly I prompt engineered both the models to make th
 
 check out the video demo of the tool. 
 Here's a link to the full article explaining the project. 
-
+x
 
 
 
