@@ -1,0 +1,86 @@
+Job Applications were getting tedious so I made a bot using RAG with Selenium in efforts to automate it.
+The constant repetitiveness of job applications can be tiresome, but it also makes them a well-defined use case for automation.
+
+I approached this challenge in two parts:
+
+
+Interacting with the web elements and automation.
+Developing a query engine system to answer questions in each application.
+
+1. Interacting with Web Elements and Automation: Selenium provides a toh of simple functions to handle a browser instance and to locate and interact with web elements.
+
+The first step is logging onto LinkedIn and searching for desired roles. To refine the search results, I included filters in the search parameters such as experience level, salary, on-site/remote, and company.
+
+Each job application contains several questions, each with a different type of web element requiring a distinct type of input. After reviewing multiple applications, I categorized these elements as radio buttons, checkboxes, single-line text fields, multi-line text fields, autofill text fields, and dropdowns. Each input type requires dedicated functions to retrieve the response for the relevant question and insert the response in a compatible format, such as filling in text or selecting a button.
+
+These smaller functions are accessed by a larger apply function that navigates through a job application, identifies each element's type, and calls the appropriate function to handle it and complete the application.
+
+To maintain this process, an iterator function loops through the job listings and the pages in the search results, calling the apply function for each job posting.
+
+Lastly, smaller tasks like submitting the application, logging details of applied jobs to an excel file,  tracking application progress, and closing dialogue boxes are handled by ad-hoc functions where necessary.
+
+On to the second part.
+
+2. Query Engine:
+Each application has its own set of questions. While repetitive, these questions can't be generalized across all applications. Initially, I created a text document of all possible questions and used string search to find appropriate answers. This approach proved suboptimal. After several trials and errors, I settled on using a combination of Hashing with fuzzymatch and multi-document agentic RAG.
+
+Local Cache and Hashing: Calling a resource-intensive LLM for frequently repeated questions is inefficient.  Most repetitive questions have identical phrasing, so they can be stored as key-value pairs in JSON records and accessed using a hash search. The simplicity of hashing adds a significant performance boost. For questions with similar but not identical phrasing, fuzzy matching can be applied over the list of questions in the cache to find a match. While slower than a hash search, this is still faster than querying a language model. 
+
+Fuzzy matching compares strings using Levenshtein distance or minimum edit distance, which measures how many edits are needed to transform one string into another.
+
+The cache is constantly updated and fed to the RAG system. If the above methods yield no results, the query is handed over to the RAG system.
+
+Agentic RAG with LlamaIndex:
+
+RAG combines information retrieval with text generation. When queried, it retrieves relevant data from a pre-indexed document store or database. This data is then used as context by a language model to generate a more accurate response. 
+
+For building the RAG model, I used LlamaIndex, an open-source framework designed for building LLM-based applications. 
+
+Here’s a walkthrough of the RAG workflow:
+
+Data Preparation and Ingestion:
+
+
+The input dataset includes the user’s resume in PDF format, a JSON file with frequently asked questions and answers, and an elaborated version of the resume in TXT format. Given the dense information in resumes, the resume is fed to GPT-3.5 to generate a more detailed version.
+
+Data is ingested using the SimpleDirectoryReader package, which loads and splits the data into smaller chunks to facilitate indexing and remain within the LLM's token size limits. These chunks are then converted into embeddings using a pre-trained model. The embeddings are stored in an indexed database, enabling the system to retrieve relevant chunks based on semantic similarity to the query.
+
+
+
+RAG using phi-3-mini:
+
+I opted for a locally implemented setup, which is achievable with smaller LLMs. After researching, I chose Microsoft's phi-3-mini-instruct, which has 3.8 billion parameters compared to GPT-4's 1.8 trillion. Using the biggest and most advanced LLMs for menial tasks is overkill. Why use a chainsaw to cut an apple when a fruit knife will do? Smaller, fine-tuned models are more efficient and offer greater control.
+
+The specific large language model (LLM) used here is phi3:3.8b-mini-4k-instruct-q4_K_M. This model employs 4-bit quantization, making it efficient to run on smaller devices. For embedding, I used BAAI/bge-small-en-v1.5 from HuggingFace.
+
+A Vector Index is created on the ingested data, which is then stored in a persistent directory for future use. From this Vector Index, a query engine can be developed. Responses can be improved through prompt engineering. For enhanced prompt engineering, LlamaIndex offers the option to override default system prompts, which I used.
+
+Although this model handled most of the questions in an application well, it struggled with long-form, summary-based questions. For these less frequent tasks, I integrated another RAG model based on GPT-3.5. These two models can be used together with an Agentic RAG system.
+
+
+ RAG using GPT-3.5-turbo:
+
+This setup is similar to the phi-3-mini setup. The LLM used here is GPT-3.5-turbo, and the embedding model is text-embedding-ada-002, both accessible via the OpenAI package. 
+
+Instead of VectorIndex This model uses SummaryIndex, which accesses the entire dataset for each query — making it ideal for long-form answers. Similar to the previous model, a query engine can be created from the SummaryIndex. Again, The default prompt is overwritten to provide more specific context, improving the model’s performance.
+
+
+Combining both RAG models; Agentic RAG:
+
+An Agentic RAG model refers to a RAG system that incorporates an agent capable of making automated decisions. These decisions guide the model’s behavior during the retrieval and generation process. In this use case, the agent determines whether to route the query to the phi-3-mini model or the GPT-3.5 model based on the question.
+
+The agent can be implemented using LlamaIndex’s RouterQueryEngine module, which employs an LLM (in this case, GPT-3.5) to route queries. For this setup, the individual RAG models — phi-3-mini and GPT-3.5 — are packaged as Query Engine Tools and integrated into the RouterQueryEngine. The router can be configured to use either one or both models simultaneously. However, since most job application questions are straightforward, using a single model at a time is sufficient.
+
+I also tried adding few shot examples to give the model a better overview of how the expected output should look like. But the drop in performance wasn't worth the improvement in quality of the responses. The responses can also be improved by adding more files related to the user's profile to the input directory.
+
+Finally, the model is packaged into an API using the FastAPI framework and hosted locally using the Uvicorn server, making it accessible to the automation part of the code. This API can be accessed using the requests package.
+
+
+Once the API is hosted, the bot can begin to apply.
+
+I've applied over 100 jobs using the bot with each application averaging out at around 20 seconds, sometimes taking less than 5 seconds for applications with all questions
+already in the cache. I've attached a video of the bot running. I used Ollama package for the local implementation. To learning abiout RAG I referred to Krish Naik'ss videos on youtuve and Gen AI course by DeepLearning.AI
+
+The full project walkthrough and the code repo can be accessed here: 
+
+

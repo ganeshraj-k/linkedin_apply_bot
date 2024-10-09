@@ -1,0 +1,557 @@
+Automate Your Job Hunt with Gen AI and Selenium
+Applying for jobs is tedious and sometimes, mentally exhausting. More than anything, it's the repetitiveness that gets to us. However, this very predictability makes it a well-defined use case for automation. And if our resumes are being scanned by AI, why not use AI to apply for jobs?
+
+The scope of this project is limited to jobs that can be applied using LinkedIn's EasyApply feature. The approach can be broadly divided into two parts:
+1. Interacting with the web pages and automation.
+2. A dynamic Query Engine to answer any kind of questions about the applicant.
+To handle web elements, we can use the Selenium package with python. Selenium offers straightforward and intuitive functions that allow you to search for and interact with web elements seamlessly.
+The query engine, on the other hand, is more complex due to the dynamic nature of job applications - each one presents new and unique questions. It is impossible to anticipate all potential queries in advance. So, we need a system that can learn the user's profile and can generate answers for any new questions encountered. This requirement can be handled by RAG which excel at use cases like this. More on RAG later.
+Project Overview:
+As mentioned earlier, web interactions are managed by Selenium. The query engine is implemented using a combination of hashing and RAG. The query engine is then packaged into an API using FastAPI, running on a Uvicorn server.
+Here's a flowchart that provides a high-level overview of the project.
+Prerequisites:
+• Python 3, pip package manager, and Jupyter Notebook.
+• Ollama (for local inference). You can download it from here. If you plan to use GPT-4, you can skip this step.
+In a command line, run:
+Ollama run phi3:3.8b-mini-4k-instruct-q4_K_M
+For local inference, it is recommended to use a device with a CUDA-supported GPU.
+• Hugging Face and OpenAI API keys (Note: OpenAI requires credits).
+• Create a virtual environment (recommended) to avoid conflicts with your current Python environment, as there are many dependencies to install.
+WebDriver: I used Edge's WebDriver, but any popular browser's WebDriver will work.
+
+Code and Instructions:
+Now that the setup is complete, let's walk through the code and implementation:
+1. Web Interaction and Automation with Selenium:
+Signing in to LinkedIn and searching for jobs:
+The first step obviously is logging on to LinkedIn. Start by opening LinkedIn's sign-in page and logging in with your credentials. This step is straightforward. Once logged in, navigate to the job search page. Input the job title and location, then click search. Here's the code to do these actions:
+def open_linkedin_and_signin():
+    driver.get(linkedin_url)
+    driver.maximize_window()
+    signin_page=driver.find_element("xpath", ".//a[contains(text(), 'Sign in') and @href]")
+    signin_page.click()
+    username_field = driver.find_element("xpath" , ".//input[@id = 'username']")
+    password_field = driver.find_element("xpath" , ".//input[@id = 'password']")
+    submit_button = driver.find_element("xpath" , ".//button[@type = 'submit']")
+    username_field.send_keys(username)
+    password_field.send_keys(password)
+    submit_button.click()
+
+def job_search_and_filters():
+    get_url("https://www.linkedin.com/jobs")
+    role_input = driver.find_element("xpath" , ".//input[@class = 'jobs-search-box__text-input jobs-search-box__keyboard-text-input jobs-search-global-typeahead__input']")
+    role_input.send_keys(role)
+    time.sleep(1)
+    location_input = driver.find_element("xpath" , ".//input[@aria-label = 'City, state, or zip code' and @autocomplete=  'address-level2']")
+    location_input.send_keys(location)
+    #submit
+    role_input.send_keys(Keys.ENTER)
+    time.sleep(2)
+    apply_filters()
+    time.sleep(2)
+    easy_apply()
+After the search results appear, apply filters to refine the results to better match your profile. If the filters yield no results, reset them.
+Lastly, apply the "Easy Apply" filter. Since this project focuses on using Easy Apply for job applications, this filter is essential.
+def workmode_filter(  workmode_selected):
+    workmode_button = driver.find_element("xpath" , ".//div[@data-basic-filter-parameter-name = 'workplaceType']  " )
+    hybrid_options = workmode_button.find_elements("xpath" , ".//li[@class = 'search-reusables__collection-values-item'] ")
+    workmode_button.click()
+    for mode in workmode_selected:
+        label = hybrid_options[workmode_dict[mode]].find_element("xpath" , ".//label")
+        label.click()
+    time.sleep(1)
+    results = workmode_button.find_element("xpath" , ".//button[@class = 'artdeco-button artdeco-button--2 artdeco-button--primary ember-view ml2'] ")
+    results.click()
+    time.sleep(2)
+
+    if check_no_matches():
+        reset_filters()
+
+def company_filter(companies):
+
+    company_button = driver.find_element("xpath" , ".//div[@data-basic-filter-parameter-name = 'company']  ")
+    company_button.click()
+    input_field = driver.find_element("xpath", ".//input[@aria-label='Add a company']")
+    for company in companies:
+    
+        # input_field = driver.find_element("xpath", ".//input[@aria-label='Add a company']")
+        input_field.clear()
+        input_field.send_keys(f"{company}")
+        time.sleep(0.5)
+        input_field.send_keys(Keys.ARROW_DOWN)
+        input_field.send_keys(Keys.ENTER)
+    time.sleep(1)
+    results = company_button.find_element("xpath" , ".//button[@class = 'artdeco-button artdeco-button--2 artdeco-button--primary ember-view ml2'] ")
+    results.click()
+    time.sleep(2)
+
+    if check_no_matches():
+        reset_filters()
+
+def easy_apply():
+    easy_apply_button = driver.find_element( "xpath" , "//button[contains(@aria-label ,'Easy Apply filter.')]") 
+    easy_apply_button.click()
+
+def apply_filters():
+    date_filter(date_posted)
+    exp_filter(experience)
+    salary_filter(salary)
+    company_filter(companies)
+    workmode_filter(workmode)
+Applying to jobs: locating and handling form elements:
+Now that we have the job listings, the next step is to actually apply. Application forms contain various types of elements, and the only way to identify them all is by reviewing several applications. After examining the forms, the types of form elements can be categorized as radio buttons, checkboxes, single-line text fields, multi-line text fields, autofill text fields, and dropdowns.
+Handling these form elements is key to filling the application. Each element requires specific function tailored to its requirements. These functions need to locate the element, retrieve the corresponding answer from the query module, and insert the answer in the format that's compatible with that element.
+Here's the code for some of these functions:
+def dropdown_select(dropdowns):
+    # Extract the question
+    for dropdown_element in dropdowns:
+        question = dropdown_element.find_element(By.XPATH, ".//label/span[@aria-hidden='true']").text
+        
+        # Extract the options
+        options = [option.text for option in dropdown_element.find_elements(By.XPATH, ".//select/option")]
+        
+        # Print the question and options
+        # print("Question:", question)
+        # print("Options:", options)
+        answer = qna_engine(question)
+        # Find the best match for the answer
+        answer_match = process.extractOne(answer, options)[0]
+        # print(answer)
+        # Select the matched option using Select
+        select_element = dropdown_element.find_element(By.XPATH, ".//select[contains(@id, 'text-entity-list-form-component-formElement')]")
+        select = Select(select_element)
+        select.select_by_visible_text(answer_match)
+
+def fill_single_line_text_field(text_fields):
+    for text_field in text_fields:
+        # Extract the question
+        question = text_field.find_element(By.XPATH, ".//label").text
+        
+        # Print the question
+        # print("Question:", question)
+        answer = qna_engine(question)
+        # print(answer)
+
+        # print(" TEXT FILL")
+        # Find the input field and clear any existing text
+        input_field = text_field.find_element(By.XPATH, ".//input[@type='text']")
+        input_field.clear()  # Clear the existing input if any
+        input_field.send_keys(answer)  # Fill the answer in the input field
+
+def fill_multiline_text_field(text_fields):
+    for text_field in text_fields:
+        # Extract the question
+        question = text_field.find_element(By.XPATH, ".//label").text
+        answer = qna_engine(question)
+        # print(answer)
+        # print("MULTI TEXT FILL")
+        # # Print the question
+        # print("Question:", question)
+        
+        # Find the textarea field and clear any existing text
+        textarea_field = text_field.find_element(By.XPATH, ".//textarea")
+        textarea_field.clear()  # Clear the existing input if any
+        textarea_field.send_keys(answer)  # Fill the answer in the textarea field
+Now, the next step is to define an Apply function that goes through the application and makes use of the functions defined above to complete the application. Additionally, in order to open, submit, close the application, a bunch of ad-hoc functions maybe necessary. Lastly, an iterator function would be required to loop through the job listings and navigate to the next pages in search results.
+def apply_job(job_card):
+    print("APPLYING TO " , role_name.text.split('\n')[0] , " AT " , company_name.text )
+    append_row_to_excel(data_tuple)
+    # append_row_to_excel(data_tuple)
+
+    job_card.click()
+    try:
+        easy_apply_button = driver.find_element("xpath" , ".//button[contains(@aria-label , 'Easy Apply to')]")
+        easy_apply_button.click()
+    except Exception as e:
+        return
+    print("clicked easy apply")
+    
+    filledresume = False
+    applying = True
+
+    while applying:
+        
+        current_progress = get_progress_percentage(driver)
+        print("current progress is",current_progress)
+
+        if theresubmit(driver):
+            print("found submit")
+            get_submit(driver)
+            break
+
+        
+        apply = driver.find_element("xpath" , ".//div[@class='jobs-easy-apply-content']")
+        form = apply.find_element("xpath", ".//form")
+
+        # Handle resume selection
+        if not filledresume and there_resume(form):
+            try:
+                select_resume(0)
+                filledresume = True
+            except Exception as e:
+                print(f"Error selecting resume: {e}")
+
+        # Handle radio buttons selection
+        form = driver.find_element("xpath", ".//form")
+        radios = form.find_elements("xpath", ".//fieldset[@data-test-form-builder-radio-button-form-component = 'true']")
+        if radios:
+            try:
+                radio_select(radios)
+            except Exception as e:
+                print(f"Error selecting radio buttons: {e}")
+
+        # Handle dropdown selection
+        form = driver.find_element("xpath", ".//form")
+        text_dropdowns = form.find_elements("xpath", ".//div[@data-test-text-entity-list-form-component='']")
+        if text_dropdowns:
+            try:
+                dropdown_select(text_dropdowns)
+            except Exception as e:
+                print(f"Error selecting dropdowns: {e}")
+
+    closingpopup = True
+    while closingpopup: 
+        
+        print("finding exit")
+        exit_buttons = driver.find_elements("xpath" , ".//button[@aria-label='Dismiss' ]")
+        if exit_buttons:
+            exit_buttons = driver.find_elements("xpath" , ".//button[@aria-label='Dismiss' ]")
+            exit_buttons[0].click()
+            print("exited")
+            print("APPLIED TO " , role_name.text.split('\n')[0] , " AT " , company_name.text )
+            append_row_to_excel(data_tuple)
+            return
+
+def iterator( driver):
+    currentpage = 1
+    nextpageexists = True
+    
+    counter = 0
+    while nextpageexists:
+        
+        search_results = driver.find_element("xpath" , ".//div[contains(@class, 'jobs-search-results-list')]")
+        list_of_jobs = search_results.find_elements( "xpath" , "//li[@data-occludable-job-id]")
+        
+        attempt_job = 0
+        while attempt_job < 3:
+            try:
+                driver.execute_script("arguments[0].scrollIntoView();", list_of_jobs[-1])
+                
+                attempt_job = 4
+            except Exception as e:
+                attempt_job += 1
+        if attempt_job == 3:
+            return
+       
+        for job in list_of_jobs:
+            
+            start_time = time.time()
+            time.sleep(1.0)
+            job.click() 
+            time.sleep(0.2)
+            apply_job(job)
+            counter+=1
+            print(counter, " jobs")
+            write_json(qna_dict, questions_path)
+            end_time = time.time()
+
+            print("time taken" , end_time - start_time)
+            
+
+        
+        attempt_job = 0
+        while attempt_job < 3:
+            try:
+                
+                driver.execute_script("arguments[0].click();", list_of_jobs[-1])
+                attempt_job = 4
+            except Exception as e:
+                attempt_job += 1
+        if attempt_job == 3:
+            return
+        
+        # next_pages = driver.find_elements("xpath", f"//button[@aria-label = 'Page {currentpage + 1}']")
+        currentpage+=1
+
+        attempts = 0
+        while attempts < 5:
+            try:
+                driver.find_element("xpath", f"//button[@aria-label = 'Page {currentpage + 1}']").click()
+                nextpageexists = True
+                attempts = 5
+            except Exception as e:
+                attempts += 1
+                nextpageexists = False
+
+        if nextpageexists:
+            print("moving to next page")
+            
+            
+        else:
+            print("ending function")
+            return
+    return
+
+def theresubmit(driver):
+    buttons = driver.find_elements( "xpath" , ".//button[@aria-label = 'Submit application']") 
+    return len(buttons) and True
+
+def get_submit(driver):
+    button = driver.find_element( "xpath" , ".//button[@aria-label = 'Submit application']") 
+    button.click()
+Add a logger to log the list of applied jobs on to an excel file. Also, add a progress indicator to see the current percentage status of each application.
+    role_name = job_card.find_element( "xpath" , ".//div[@class = 'full-width artdeco-entity-lockup__title ember-view']")
+    company_name = job_card.find_element( "xpath" , ".//div[@class = 'artdeco-entity-lockup__subtitle ember-view']")
+    other_data = job_card.find_elements("xpath" , ".//ul[@class = 'job-card-container__metadata-wrapper']")
+    data_tuple = []
+    data_tuple.append(get_current_datetime())
+    data_tuple.append(role_name.text.split('\n')[0])
+    data_tuple.append(company_name.text)
+    for other in other_data:
+        data_tuple.append(other.text)
+    
+    
+    print("APPLYING TO " , role_name.text.split('\n')[0] , " AT " , company_name.text )
+    # append the new record to the excel file
+    append_row_to_excel(data_tuple)
+    # append_row_to_excel(data_tuple)
+
+def get_progress_percentage(driver):
+    # Locate the progress element and extract the value
+    progress_element = driver.find_element(By.CSS_SELECTOR, "progress.artdeco-completeness-meter-linear__progress-element")
+    current_progress = progress_element.get_attribute("value")
+    return current_progress
+Adding a random wait time between each action so as to not get flagged by LinkedIn's bot flagging systems.
+from random import randint
+driver.implicitly_wait(randint(1,7))
+Now that the boring tasks have been automated, we can move on to the less boring part.
+2. Answering Questions in the Application:
+Although many of the questions in job applications are repetitive, they can't be generalized across all applications (I tried) , as each job posting has its own unique requirements and questions.
+This can be handled by a combination of local cache for frequently repeated questions and a RAG system to answer questions that haven't previously encountered. Let's look at the cache part first.
+Local Cache using Hashing and FuzzyMatch:
+While advanced LLMs are powerful, nothing beats the simplicity of an O(1) search. Since most repetitive questions have identical phrasing, they can be stored as key-value pairs in JSON records and accessed via a simple hash search. For questions with similar but not exact phrasing, fuzzy matching can be applied to the list of keys in the JSON, using a 90% match threshold to find existing answers. While slower than a direct hash search, this method remains faster than querying a Language Model due to its relatively lower computational complexity.
+Fuzzy matching compares strings using Levenshtein distance or min edit distance which measures how many edits are required to transform one string to another. The percentage of match is 1 - (number of edits needed/max length of both strings). This can be implemented using the fuzzywuzzy package. Instead of using the regular match ratio, WRatio performs transformations on strings like lowercasing, sorting tokens alphabetically, treating tokens as sets, before giving the match a score, which makes it more robust.
+The json file is constantly updated after each application and the updated file is fed to the RAG system.
+def qna_engine(question):
+    questions_list = list(qna_dict.keys())
+
+    question = str(question)
+
+    if question in qna_dict:
+        answer = qna_dict[question]
+    else:
+        threshold = 90
+        matches = process.extract(question, questions_list, scorer=fuzz.WRatio, limit=3)
+        filtered_matches = [match for match in matches if match[1] >= threshold]
+        
+        if not filtered_matches:
+            answer = rag_query(question)
+            qna_dict[question] = answer
+        else:
+            # Corrected to use the matched question string
+            matched_question = filtered_matches[0][0]  # Get the actual question from the tuple
+            answer = qna_dict[matched_question]
+            print("THERE IS A MATCH")
+
+    return answer
+If the above methods yield no results, the query is then handed over to the RAG system.
+Agentic RAG with LlamaIndex:
+RAG (Retrieval-Augmented Generation) combines information retrieval with text generation. When a query is made, the system retrieves relevant data from a document store or database, often pre-indexed. This retrieved data serves as context and is passed to a language model, which uses both the query and context to generate a more accurate and informed response.
+For this use case, the RAG system can be implemented using LlamaIndex, an open-source framework designed for building LLM-based applications. It offers tools for data ingestion, indexing, and querying. By default, LlamaIndex uses GPT-3.5 as the language model.
+Here's a walkthrough of the RAG workflow:
+Data Preparation and Ingestion:
+The input dataset consists of the user's resume in pdf format, the Json file containing the frequent questions with answers and an elaborated version of the resume as a txt file. Since resumes are densely packed with information, Language Models may overlook some of it. So, the resume is fed to GPT-3.5 to generate an elaborated version of the same with more detailed descriptions.
+
+client = OpenAI()
+
+def generate_detailed_summary(pdf_text, json_data, openai_api_key):
+    # Combine PDF text and JSON data into a detailed prompt
+    prompt = f"""
+    You are given a resume of a job applicant. 
+    Extract as much information from the resume as possible. 
+    Analyze the resume thoroughly and rewrite the resume in a more detailed and elaborated format. 
+    Also generate all possible questions and answers based on the information provided in the resume. 
+    PDF (Resume) Content:
+    {pdf_text}
+
+    JSON (Q&A) Data:
+    {json.dumps(json_data, indent=2)}
+    """
+    
+    # Call GPT-4 using the new OpenAI API syntax
+    response = client.chat.completions.create(
+        model="gpt-4",  # Change the model to "gpt-4" if needed
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant that summarizes job applicant profiles."},
+            {"role": "user", "content": prompt},
+        ]
+    )
+    
+    # Extract and return the generated summary
+    return response.choices[0].message.content
+The data is ingested using SimpleDirectoryReader package from LlamaIndex which takes all the files in a given directory and can handle most of the popular file formats.
+The documents are split into smaller chunks to facilitate indexing and ensure they remain within the token size limits of the LLM. In this case, the documents are split into chunks of 1024 tokens. These chunks are then converted into embeddings using a pre-trained embedding model. The embeddings are stored as an indexed Database, allowing the system to retrieve relevant chunks based on semantic similarity to the query.
+docs = SimpleDirectoryReader(docs_path).load_data()
+splitter = SentenceSplitter(chunk_size=1024)
+documents = splitter.get_nodes_from_documents(docs)
+RAG using phi-3-mini-instruct:
+To implement RAG locally, the options are limited to a handful of SLMs or Small Language Models. For this use case, the model used is Phi-3-mini by Microsoft, which is a small, efficient model with around 3.8B parameters.
+The specific small language model (SLM) used here is phi3:3.8b-mini-4k-instruct-q4_K_M, loaded via the Ollama package. This model uses 4-bit quantization, making it efficient to run on smaller devices. The embedding model used is BAAI/bge-small-en-v1.5, provided by HuggingFace.
+As mentioned previously, first, a Vector Index is created on the ingested data. A query engine can be created from Vector Index using as_query_engine() function. The index can be stored in a persistent directory to avoid re-creating it with each query, significantly saving time. This can be further refined by overwriting the default prompts by replacing it with a custom prompt.
+qa_prompt_tmpl_str_phi3 = """\
+Context information is below.
+---------------------
+{context_str}
+---------------------
+Given the context information and not prior knowledge,
+it is very important that you follow the instructions clearly and answer based on the given information.
+Answer the query in the format requested in the query.
+If there are options in the query, answer by choosing one or more options as required.
+Try to read the document thoroughly to extract more info from the document.
+When asked for city, return the city name along with the state.
+Return only one answer, do not return multiple answers or list of answers unless specified.
+
+For queries like "how many years of experience do you have with some tool", return just the integer.
+For queries like "how many years of experience", the answer should always be an integer.
+.
+Keep the answers concise and to the point, do not answer long sentences unless necessary or specified.
+Keep the answers concise. Answer in one or two words wherever possible. Keep the answers short, do not elaborate unless necessary, do not explain or elaborate.
+
+Query: {query_str}
+Answer: \
+"""
+
+phi3_llm = Ollama(
+    model="phi3:3.8b-mini-4k-instruct-q4_K_M",
+    temperature=0.01,
+    request_timeout=400,
+    system_prompt=system_prompt,
+    context_window=2000
+)
+
+phi3_embed = HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5")
+
+    splitter = SentenceSplitter(chunk_size=1024)
+    documents = splitter.get_nodes_from_documents(docs)
+
+    Settings.llm = phi3_llm
+    Settings.embed_model = phi3_embed
+
+    if check_persist(vector_index_dir):
+        storage_context = StorageContext.from_defaults(persist_dir=vector_index_dir)
+        vector_index = load_index_from_storage(storage_context)
+    else:
+        vector_index = VectorStoreIndex(documents)
+        vector_index.storage_context.persist(vector_index_dir)
+
+    vector_query_engine = vector_index.as_query_engine(response_mode='compact', use_async=True)
+    qa_prompt_tmpl = PromptTemplate(qa_prompt_tmpl_str_phi3)
+    vector_query_engine.update_prompts({"response_synthesizer:text_qa_template": qa_prompt_tmpl})
+Phi-3-mini did really well with short question and answers but was failing with long form summary-based questions. For these tasks we can use an additional RAG model based on GPT-3.5-turbo. These two models can be used together in an Agentic RAG system.
+RAG using GPT-3.5-turbo:
+This setup is similar to the phi-3-mini setup, but the LLM used here is GPT-3.5-turbo, and the embedding model is text-embedding-ada-002, both accessible via the OpenAI package. Instead of using a VectorIndex, we generate a SummaryIndex, which accesses the entire dataset for each query - making it ideal for long-form answers. Similar to the previous model, a query engine can be created from the SummaryIndex. The default prompt is overwritten to provide more specific context, improving the model's performance.
+gpt3_5_llm = OpenAI(model="gpt-3.5-turbo")
+gpt3_5_embed = OpenAIEmbedding(model="text-embedding-ada-002")
+
+qa_prompt_tmpl_str_gpt4 = """\
+Context information is below.
+---------------------
+{context_str}
+---------------------
+Given the context information and not prior knowledge,
+it is very important that you follow the instructions clearly and answer based on the given information.
+Answer the query in the format requested in the query.
+Do not leave blanks in the answers.
+Always answer the questions in the form of a cover letter and in first person.
+If asked for a cover letter, write a short cover letter talking about your previous work experience and how it would make you a good fit for the given role.
+If asked about why you want to work at a certain company, write a concise cover letter including the company's name and talking about your previous work experience and how it would make you a good fit for the given role.
+
+Query: {query_str}
+Answer: \
+"""
+
+  splitter = SentenceSplitter(chunk_size=1024)
+    documents = splitter.get_nodes_from_documents(docs)
+
+    Settings.llm = gpt3_5_llm
+    Settings.embed_model = gpt3_5_embed
+
+    if check_persist(summary_index_dir):
+        storage_context = StorageContext.from_defaults(persist_dir=summary_index_dir)
+        summary_index = load_index_from_storage(storage_context)
+    else:
+        summary_index = VectorStoreIndex(documents)
+        summary_index.storage_context.persist(summary_index_dir)
+
+    summary_query_engine = summary_index.as_query_engine(response_mode="refine", use_async=True)
+    qa_prompt_tmpl = PromptTemplate(qa_prompt_tmpl_str_phi3)
+    summary_query_engine.update_prompts({"response_synthesizer:text_qa_template": qa_prompt_tmpl})
+Combining both RAG models; Agentic RAG:
+An Agentic RAG model refers to a RAG system that incorporates an agent capable of making automated decisions. These decisions guide the model's behavior during the retrieval and generation process. In this use case, an Agent is used to determine whether to route the query to the phi-3-mini model or the GPT-3.5 model, depending on the specific requirements of the task.
+The agent can be implemented using LlamaIndex's RouterQueryEngine module, which use an LLM (in this case, GPT-3.5) to route queries to the appropriate tools. For this, the individual RAG models - phi-3-mini and GPT-3.5 - must be packaged as Query Engine Tools and integrated into the RouterQueryEngine. The router can be configured to use either one or both models simultaneously. However, since most job application questions are straightforward, using a single model is generally more computationally efficient for performance.
+
+summary_tool = QueryEngineTool.from_defaults(
+        name="coverletter_tool",
+        query_engine=summary_query_engine,
+        description="for long answer and summary based questions about the profile"
+    )
+
+vector_tool = QueryEngineTool.from_defaults(
+        name="vector_tool",
+        query_engine=vector_query_engine,
+        description="Useful for retrieving specific context from the documents."
+    )
+docs = SimpleDirectoryReader(docs_path).load_data()
+
+# Get the summarization and vector tools
+summary_tool = get_summary_tool(docs)
+vector_tool = get_vector_tool(docs)
+
+# Now you can use summary_tool and vector_tool for your queries
+query_engine = RouterQueryEngine(
+    selector=LLMSingleSelector.from_defaults(),
+    query_engine_tools=[summary_tool, vector_tool],
+    verbose=True
+)
+This model has to be running in the background and be available to be accessed by the automation part of the code. The best way to do that is to package it into an API and provide the API endpoint to the automation part.
+Packaging the model into an API using FastAPI and Uvicorn:
+The model is packaged into an API using FastAPI framework and hosted locally using Uvicorn server.
+@app.post("/resume_qa", response_model=QueryResponse)
+async def generate_text(request: QueryRequest):
+    query = request.query
+    try:
+        response = query_engine.query(query)
+        formatted_response = str(response.response)
+        print(formatted_response)
+        return QueryResponse(response=formatted_response)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Optional: Health check endpoint
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}
+
+# Run the application using Uvicorn
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+The API can be accessed using requests package.
+def rag_query(query):
+    url = "http://127.0.0.1:8000/resume_qa"
+    payload = {"query": query}
+    response = requests.post(url, json=payload)
+    return response.json().get('response')
+Here's a test run:
+starting the server:
+running a sample query:
+Running the Entire Thing:
+First we start the API using the following command
+uvicorn filename:app --reload
+Once the API is online, run the automation script. It should work and start applying jobs in a minute.
+open_linkedin_and_signin()
+job_search_and_filters()
+time.sleep(3)
+iterator(driver)
+
+You can find the entire code repo here:
+GitHub - ganeshraj-k/linkedin_apply_bot: a bot to auto apply jobs under easy apply on linkedin
+a bot to auto apply jobs under easy apply on linkedin - ganeshraj-k/linkedin_apply_botgithub.com
