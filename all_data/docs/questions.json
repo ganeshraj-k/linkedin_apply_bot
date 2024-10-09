@@ -37,5 +37,9 @@
     "disability status": "not disabled, never had any disabilities in the past",
     "How many years of work experience do you have with Generative AI?": "1",
     "How many years of work experience do you have with Retrieval-Augmented Generation (RAG)?": "1",
-    "How many years of work experience do you have with Machine Learning Algorithms?": "5"
+    "How many years of work experience do you have with Machine Learning Algorithms?": "5",
+    "How many years of work experience do you have with Synthetic Data Generation?": "1",
+    "City\nCity": "New Jersey",
+    "What's your citizenship / employment eligibility?\nWhat's your citizenship / employment eligibility?": "United States",
+    "How many years of work experience do you have with reference data in the finance industry?": "1"
 }

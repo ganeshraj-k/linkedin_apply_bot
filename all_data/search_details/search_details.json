@@ -1,6 +1,6 @@
 {
 "_comment": "time_dict = {\"Any time\": 0, \"Past month\": 1, \"Past week\": 2, \"Past 24 hours\": 3}\n\nexp_dict = {\"Internship\": 0, \"Entry level\": 1, \"Associate\": 2, \"Mid-Senior level\": 3, \"Director\": 4, \"Executive\": 5}\n\nsalary_dict = {\"$40,000+\": 0, \"$60,000+\": 1, \"$80,000+\": 2, \"$100,000+\": 3, \"$120,000+\": 4, \"$140,000+\": 5, \"$160,000+\": 6, \"$180,000+\": 7, \"$200,000+\": 8}\n\nworkmode_dict = {\"On-site\": 0, \"Remote\": 1, \"Hybrid\": 2}",
-"job role" : "Data Scientist",
+"job role" : "Data Analyst",
 "Location" : "United States",
 "Time Posted" : "Past month",
 "experience level" : [],
