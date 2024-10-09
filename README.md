@@ -98,6 +98,7 @@ Notes
 Project Walkthrough
 
 A detailed walkthrough of the project, including code explanations and a video demo, can be found in this Medium article.
-Connect with Me
+https://medium.com/@ganesh_012/automate-your-job-hunt-with-gen-ai-and-selenium-5348ad7f8119
 
-Feel free to reach out or follow me on LinkedIn: Ganesh's LinkedIn.
+
+Feel free to reach out or follow me on LinkedIn: https://www.linkedin.com/in/ganeshrajk/
