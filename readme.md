@@ -5,6 +5,12 @@
 
 This project is designed to automate job applications listed under LinkedIn's **EasyApply** feature using a combination of Selenium for web automation and an Agentic RAG system for answering questions within the application. The bot can handle repetitive tasks like job searches, applying to positions, and answering application questions, making your job application process more efficient.
 
+project flowchart:
+https://github.com/ganeshraj-k/linkedin_apply_bot/blob/main/flowchart.png
+
+bot demo:
+https://vimeo.com/1017782472
+
 ### Features
 - **Automation with Selenium**: Automates the process of logging into LinkedIn, searching for jobs, and applying to positions listed under EasyApply.
 - **Query Engine for Application Questions**: Uses a combination of hashing, fuzzy matching, and an Agentic RAG system to answer questions automatically.
