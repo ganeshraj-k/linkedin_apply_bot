@@ -88,10 +88,10 @@ Context information is below.
 {context_str}
 ---------------------
 Given the context information and not prior knowledge,
-it is very important that you follow the instructions clearly and answer based on the given information.
 Answer the query in the format requested in the query.
+It is very important and a priority to keep the answers extremely short and concise.
+Keep the answers concise and as short as possible. Answer in one or two words wherever possible. Keep the answers short, do not elaborate unless necessary, do not explain or elaborate.
 If there are options in the query, answer by choosing one or more options as required.
-Try to read the document thoroughly to extract more info from the document.
 When asked for city, return the city name along with the state.
 Return only one answer, do not return multiple answers or list of answers unless specified.
 For queries which ask for years of experience, always return values greater than 1.
@@ -101,7 +101,8 @@ For questions that start like "do you have experience with", always return "Yes"
 For queries that begin with "Experience with", they are asking the number of years of experience; treat this query the same as those that ask for the number of years of experience with a certain tool.
 For queries that ask "are you willing to relocate" or "are you local to a certain place", always answer "Yes".
 Keep the answers concise and to the point, do not answer long sentences unless necessary or specified.
-Keep the answers concise. Answer in one or two words wherever possible. Keep the answers short, do not elaborate unless necessary, do not explain or elaborate.
+Do not explain the answer or do not generate any text in addition to the answer. 
+
 
 Query: {query_str}
 Answer: \
@@ -123,21 +124,21 @@ def get_summary_tool(docs):
         summary_index.storage_context.persist(summary_index_dir)
 
     summary_query_engine = summary_index.as_query_engine(response_mode="refine", use_async=True)
-    qa_prompt_tmpl = PromptTemplate(qa_prompt_tmpl_str_phi3)
+    qa_prompt_tmpl = PromptTemplate(qa_prompt_tmpl_str_gpt4)
     summary_query_engine.update_prompts({"response_synthesizer:text_qa_template": qa_prompt_tmpl})
 
     summary_tool = QueryEngineTool.from_defaults(
-        name="coverletter_tool",
+        name="summary_tool",
         query_engine=summary_query_engine,
-        description="for long answer and summary based questions about the profile"
+        description="Use only for long answer and summary based questions about the profile. do not use otherwise or if not necessary"
     )
 
     return summary_tool
 
 # Function to get the vector search tool using phi3-mini
 def get_vector_tool(docs):
-    splitter = SentenceSplitter(chunk_size=1024)
-    documents = splitter.get_nodes_from_documents(docs)
+    # splitter = SentenceSplitter(chunk_size=1024)
+    # documents = splitter.get_nodes_from_documents(docs)
 
     Settings.llm = phi3_llm
     Settings.embed_model = phi3_embed
@@ -146,7 +147,7 @@ def get_vector_tool(docs):
         storage_context = StorageContext.from_defaults(persist_dir=vector_index_dir)
         vector_index = load_index_from_storage(storage_context)
     else:
-        vector_index = VectorStoreIndex(documents)
+        vector_index = VectorStoreIndex(docs)
         vector_index.storage_context.persist(vector_index_dir)
 
     vector_query_engine = vector_index.as_query_engine(response_mode='compact', use_async=True)
@@ -156,7 +157,7 @@ def get_vector_tool(docs):
     vector_tool = QueryEngineTool.from_defaults(
         name="vector_tool",
         query_engine=vector_query_engine,
-        description="Useful for retrieving specific context from the documents."
+        description="Useful for short questions about the profile.Use this tool always until specificall requested for long form answers or if long form answers are required. Prioritize this tool"
     )
 
     return vector_tool
@@ -171,9 +172,13 @@ vector_tool = get_vector_tool(docs)
 # Now you can use summary_tool and vector_tool for your queries
 query_engine = RouterQueryEngine(
     selector=LLMSingleSelector.from_defaults(),
-    query_engine_tools=[summary_tool, vector_tool],
-    verbose=True
+    query_engine_tools=[
+        summary_tool,
+        vector_tool,
+    ],
+    
 )
+
 
 # Initialize FastAPI
 app = FastAPI()

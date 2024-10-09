@@ -21,6 +21,8 @@
     "How many years of work experience do you have with Balance Sheets?": "1",
     "How many years of work experience do you have with QuickBooks?": "1",
     "We must fill this position urgently. Can you start immediately?\nWe must fill this position urgently. Can you start immediately?": "Yes",
+    "how many years experience with RAG": "1",
+    "how many years experience with Gen AI": "1",
     "How many years of work experience do you have with Journal Entries (Accounting)?": "1",
     "Street address line 1": "Phelps Ave",
     "State": "New Jersey",
@@ -31,5 +33,9 @@
     "Experience with Data Science": "5",
     "Experience with AI/ML?": "Yes",
     "Are you comfortable working in a hybrid setting?\nAre you comfortable working in a hybrid setting?": "Yes",
-    "Do you currently reside within a 1 hour drive to O'Hare Airport?": "Yes"
+    "Do you currently reside within a 1 hour drive to O'Hare Airport?": "Yes",
+    "disability status": "not disabled, never had any disabilities in the past",
+    "How many years of work experience do you have with Generative AI?": "1",
+    "How many years of work experience do you have with Retrieval-Augmented Generation (RAG)?": "1",
+    "How many years of work experience do you have with Machine Learning Algorithms?": "5"
 }

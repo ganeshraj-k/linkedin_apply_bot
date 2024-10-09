@@ -8,35 +8,8 @@ He has executed successful projects like designing a web application with 200 tr
 
 Based on his certifications as an AWS Machine Learning Specialist and AWS Cloud Practitioner, Ganesh possesses a strong understanding of Machine Learning and Cloud Services.
 
-Questions and Answers from JSON data:
 
-- Full Name: Ganesh Raj Kyatham
-- Contact Number: 8483138525
-- Email Id: ganesh_012@outlook.com
-- Country Code: United States (+1)
-- Bachelor's Degree Completion: Yes
-- Accounting/Auditing Experience: 1 year
-- Legal Right to Work in the United States: Yes
-- Microsoft Excel Experience: 3 years
-- Salary Expectations: 80,000 USD
-- GAAP Experience: 1 year
-- Account Reconciliation Experience: 1 year
-- General Ledger Experience: 1 year
-- Comfortable Undergoing Background Check: Yes
-- Comfortable Taking Drug Test: Yes
-- Comfortable Commuting to Job's Location: Yes
-- Comfortable Working Onsite: Yes
-- Sponsorship for Employment Visa Status: No
-- Legally Authorized to Work in the US: Yes
-- Accounting Balances Experience: 1 year
-- Balance Sheets Experience: 1 year
-- QuickBooks Experience: 1 year
-- Immediate Startup Availability: Yes
-- Journal Entries (Accounting) Experience: 1 year
-- MySQL Experience: 4 years
-- Willingness to Go Onsite at Charlotte, NC: Yes
-- Python Experience: 5 years
-- Data Science Experience: 5 years
-- AI/ML Experience: Yes
-- Comfortable Working in a Hybrid Setting: Yes
-- Current Residence: Within 1 hour drive to O'Hare Airport
+EHR experience 1
+medical records experience 1
+ 
+Experience with all other tools 1
